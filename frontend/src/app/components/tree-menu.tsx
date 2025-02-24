@@ -141,6 +141,18 @@ const TreeNode: React.FC<{
 const TreeView: React.FC = ({loading}: any) => {
   const selector = useSelector((state: RootState) => state.tree);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+  const [selectedRoot, setSelectedRoot] = useState<string | null>(null);
+
+  // Get root folders (depth = 0)
+  const rootFolders = selector.treeData.filter(item => item.depth === 0);
+
+  // Filter tree data based on selected root
+  const filteredTreeData = selectedRoot 
+    ? selector.treeData.filter(item => 
+        item.id === selectedRoot || 
+        (item.parentId && item.parentId === selectedRoot)
+      )
+    : selector.treeData;
   const toggleNode = (name: string) => {
     setExpandedNodes((prev) => {
       const newSet = new Set(prev);
@@ -177,6 +189,23 @@ const TreeView: React.FC = ({loading}: any) => {
   return (
     <div className="rounded-lg w-96">
       {/* Expand/Collapse Buttons */}
+      {/* Root Folder Selector */}
+      <div className="mb-4 space-y-2">
+        <label className="text-[#475467]">Menu</label>
+        <select
+          className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB] w-full"
+          value={selectedRoot || ''}
+          onChange={(e) => setSelectedRoot(e.target.value || null)}
+        >
+          <option value="">All Folders</option>
+          {rootFolders.map((folder) => (
+            <option key={folder.id} value={folder.id}>
+              {folder.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="mb-2 flex space-x-2">
         <button
           onClick={expandAll}
@@ -198,7 +227,7 @@ const TreeView: React.FC = ({loading}: any) => {
         </div>
       ) : !selector.treeData.length || selector.treeData.length === 0 ? <div>
         No menu items found.
-      </div> : selector?.treeData?.map((node) => (
+      </div> : filteredTreeData?.map((node) => (
         <TreeNode
           key={node.name}
           node={node}

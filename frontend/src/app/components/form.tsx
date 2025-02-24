@@ -104,7 +104,9 @@ const FormComponent = () => {
     if (!response.ok) {
       throw new Error("Failed to add menu");
     }
-    setLoading(false);
+        setTimeout(() => {
+      setLoading(false);
+    }, 2000)
     reset();
   };
 
@@ -126,7 +128,9 @@ const FormComponent = () => {
     if (!response.ok) {
       throw new Error("Failed to edit menu");
     }
-    setLoading(false);
+        setTimeout(() => {
+      setLoading(false);
+    }, 2000)
     reset();
   };
 
@@ -160,8 +164,6 @@ const FormComponent = () => {
     },
   });
 
-  console.log("object :", form.state.errors);
-
   return (
     <div>
       <form
@@ -190,13 +192,13 @@ const FormComponent = () => {
           </form.Field>
         </div>
 
-        <div className="flex flex-col space-y-2 w-50">
+        <div className="flex flex-col space-y-2">
           <form.Field name="depth">
             {(field) => (
               <>
                 <label className='text-[#475467]' htmlFor={field.name}>Depth</label>
                 <input
-                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#EAECF0] w-[50%]"
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#EAECF0] w-full lg:w-[50%]"
                   name={field.name}
                   type="number"
                   disabled
@@ -209,13 +211,13 @@ const FormComponent = () => {
           </form.Field>
         </div>
 
-        <div className="flex flex-col space-y-2 w-[50%]">
+        <div className="flex flex-col space-y-2">
           <form.Field name="parentData">
             {(field) => (
               <>
                 <label className='text-[#475467]' htmlFor={field.name}>Parent Data</label>
                 <select
-                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB]"
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB] w-full lg:w-[50%]"
                   value={field.state.value?.value}
                   onChange={(e) => {
                     const selectedItem = dropwDownData.find(
@@ -264,7 +266,7 @@ const FormComponent = () => {
               <>
                 <label className='text-[#475467]' htmlFor={field.name}>Name</label>
                 <input
-                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB] w-[50%]"
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB] w-full lg:w-[50%]"
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
@@ -280,7 +282,7 @@ const FormComponent = () => {
 
         <button
           type="submit"
-          className="bg-arctic-blue px-[32px] py-[14px] rounded-full text-white w-[50%] h-[52px]"
+          className="bg-arctic-blue px-[32px] py-[14px] rounded-full text-white w-full lg:w-[50%] h-[52px]"
           disabled={loading}
         >
           {loading ? "Saving..." : "Save"}

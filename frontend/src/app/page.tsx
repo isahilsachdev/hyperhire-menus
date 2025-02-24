@@ -35,12 +35,12 @@ export default function Page() {
         </div>
         <h1 className="text-blue-gray font-black text-2xl">Menus</h1>
       </div>
-      <div className="p-[16px] w-[90%]">
+      <div className="p-[16px] w-[100%]">
         <div className="flex flex-col lg:flex-row mt-4 gap-6">
-          <div className="w-[90%] lg:w-[50%]">
+          <div className="w-[100%] lg:w-[50%]">
             <TreeView loading={loading} />
           </div>
-          <div className="w-[90%] lg:w-[40%]">
+          <div className="w-[100%] lg:w-[40%]">
             <FormComponent />
           </div>
         </div>
