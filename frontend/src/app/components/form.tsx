@@ -172,6 +172,24 @@ const FormComponent = () => {
         }}
         className="flex flex-col space-y-4"
       >
+        <div className="flex flex-col space-y-2">
+          <form.Field name="id">
+            {(field) => (
+              <>
+                <label className='text-[#475467]' htmlFor={field.name}>Menu ID</label>
+                <input
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#EAECF0] w-full"
+                  name={field.name}
+                  disabled
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </>
+            )}
+          </form.Field>
+        </div>
+
         <div className="flex flex-col space-y-2 w-50">
           <form.Field name="depth">
             {(field) => (
