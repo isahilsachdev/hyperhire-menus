@@ -7,7 +7,7 @@ import { IMenu } from "../../../types/menu";
 import {
   fetchTreeData,
   setSelectedTree,
-  setTipe,
+  setType,
 } from "../store/slices/treeSlice";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,7 +78,7 @@ const FormComponent = () => {
       },
       id: ''
     });
-    dispatch(setTipe("add"));
+    dispatch(setType("add"));
     dispatch(setSelectedTree(null));
     dispatch(fetchTreeData());
   };
@@ -153,7 +153,7 @@ const FormComponent = () => {
         slug: generateSlug(value.name),
         depth: value.depth,
       };
-      if (selector.tipe === "add") {
+      if (selector.type === "add") {
         submitAdd(temp);
       } else {
         submitEdit(temp);

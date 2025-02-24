@@ -8,7 +8,7 @@ import { RootState, useAppDispatch } from "../store";
 import {
   fetchTreeData,
   setSelectedTree,
-  setTipe,
+  setType,
 } from "../store/slices/treeSlice";
 
 const TreeNode: React.FC<{
@@ -80,7 +80,7 @@ const TreeNode: React.FC<{
                           parentId: node.id,
                         })
                       );
-                      dispatch(setTipe("add"));
+                      dispatch(setType("add"));
                     }}
                   >
                     <Plus color="white" />
@@ -111,7 +111,7 @@ const TreeNode: React.FC<{
                           id: node.id,
                         })
                       );
-                      dispatch(setTipe("edit"));
+                      dispatch(setType("edit"));
                     }}
                   >
                     <Edit color="white" />

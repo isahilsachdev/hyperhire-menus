@@ -4,7 +4,7 @@ import { IMenu, IUserSchema } from "../../../../types/menu";
 interface TreeState {
   selectedTree: IUserSchema | null;
   treeData: IMenu[];
-  tipe: "add" | "edit";
+  type: "add" | "edit";
   loading: boolean;
   error?: string | null;
 }
@@ -24,7 +24,7 @@ export const fetchTreeData = createAsyncThunk(
 const initialState: TreeState = {
   selectedTree: null,
   treeData: [],
-  tipe: "add",
+  type: "add",
   loading: false,
   error: null,
 };
@@ -39,8 +39,8 @@ const treeSlice = createSlice({
     setTreeData(state, action: PayloadAction<IMenu[]>) {
       state.treeData = action.payload;
     },
-    setTipe(state, action: PayloadAction<"add" | "edit">) {
-      state.tipe = action.payload;
+    setType(state, action: PayloadAction<"add" | "edit">) {
+      state.type = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -59,5 +59,5 @@ const treeSlice = createSlice({
   },
 });
 
-export const { setSelectedTree, setTreeData, setTipe } = treeSlice.actions;
+export const { setSelectedTree, setTreeData, setType } = treeSlice.actions;
 export default treeSlice.reducer;
