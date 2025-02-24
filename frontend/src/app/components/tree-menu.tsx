@@ -144,7 +144,7 @@ const TreeView: React.FC<{ loading: boolean }> = ({ loading }) => {//+
   const [selectedRoot, setSelectedRoot] = useState<string | null>(null);
 
   // Get root folders (depth = 0)
-  const rootFolders = selector.treeData.filter(item => item.depth === 0);
+  const rootFolders = selector.treeData?.length > 0 ? selector.treeData?.filter(item => item.depth === 0): [];
 
   // Filter tree data based on selected root
   const filteredTreeData = selectedRoot 
@@ -225,7 +225,7 @@ const TreeView: React.FC<{ loading: boolean }> = ({ loading }) => {//+
         <div>
           ...Loading
         </div>
-      ) : !selector.treeData.length || selector.treeData.length === 0 ? <div>
+      ) : !selector.treeData.length || selector.treeData.length === 0 ? <div className="mt-6">
         No menu items found.
       </div> : filteredTreeData?.map((node) => (
         <TreeNode
