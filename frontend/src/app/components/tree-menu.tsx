@@ -196,9 +196,9 @@ const TreeView: React.FC = ({loading}: any) => {
         <div>
           ...Loading
         </div>
-      ) : selector.treeData.length === 0 ? <div>
+      ) : !selector.treeData.length || selector.treeData.length === 0 ? <div>
         No menu items found.
-      </div> : selector.treeData.map((node) => (
+      </div> : selector?.treeData?.map((node) => (
         <TreeNode
           key={node.name}
           node={node}
