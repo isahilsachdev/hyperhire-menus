@@ -138,7 +138,7 @@ const TreeNode: React.FC<{
   );
 };
 
-const TreeView: React.FC = ({loading}: any) => {
+const TreeView: React.FC<{ loading: boolean }> = ({ loading }) => {//+
   const selector = useSelector((state: RootState) => state.tree);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const [selectedRoot, setSelectedRoot] = useState<string | null>(null);
