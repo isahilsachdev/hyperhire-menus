@@ -45,9 +45,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex p-4 justify-between space-x-2">
           <Image src={"/logo.svg"} width={70} height={21} alt="Logo" />
-          <Button size="icon" onClick={toggleSidebar}>
-            <Image src={"/close.svg"} width={20} height={20} alt="Close" />
-          </Button>
+          <Image onClick={toggleSidebar} src={"/close.svg"} width={20} height={20} alt="Close" />
         </div>
       </SidebarHeader>
       <SidebarContent className="p-4">
@@ -72,7 +70,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     className={twMerge(
-                      item.isActive && "bg-[#9FF443] text-[#101828]"
+                      item.isActive && "bg-[#9FF443] text-[#101828]", "!h-[48px]"
                     )}
                   >
                     <a href={item.url}>

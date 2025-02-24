@@ -20,8 +20,10 @@ const TreeNode: React.FC<{
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useAppDispatch();
   const isLastChild = !node.children?.length;
+  const [loading, setLoading] = useState(false);
 
   const deleteNode = async () => {
+    setLoading(true);
     const response = await fetch("/api/delete-menu", {
       method: "DELETE",
       headers: {
@@ -33,99 +35,110 @@ const TreeNode: React.FC<{
       throw new Error("Failed to edit menu");
     }
     dispatch(fetchTreeData());
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000)
   };
   return (
     <div className="ml-4">
-      <div
-        className="flex items-center space-x-2 w-max"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div
-          onClick={() => toggleNode(node.name)}
-          className="text-left  flex items-center space-x-2 focus:outline-none h-8"
-        >
-          {node.children && (
-            <span>
-              {isExpanded ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
-              )}
-            </span>
-          )}
-          <span>{node.name}</span>
-        </div>
-        {isHovered && (
-          <span className="flex space-x-1">
-            <Button
-              variant="ghost"
-              size="smallIcon"
-              className="hover:bg-arctic-blue bg-arctic-blue rounded-full"
-              onClick={() => {
-                dispatch(
-                  setSelectedTree({
-                    depth: node.depth + 1,
-                    name: "",
-                    parentId: node.id,
-                  })
-                );
-                dispatch(setTipe("add"));
-              }}
+      {
+        loading ? (
+          <p>...Deleting</p>
+        ) : (
+          <>
+            <div
+              className="flex items-center space-x-2 w-max"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              <Plus color="white" />
-            </Button>
-            {isLastChild && (
-              <Button
-                variant="ghost"
-                size="smallIcon"
-                className="hover:bg-red-600 bg-red-500 rounded-full"
-                onClick={() => {
-                  deleteNode();
-                }}
+              <div
+                onClick={() => toggleNode(node.name)}
+                className="text-left  flex items-center space-x-2 focus:outline-none h-8"
               >
-                <Trash className="w-2 h-2" color="white" />
-              </Button>
+                {node.children && (
+                  <span>
+                    {isExpanded ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
+                  </span>
+                )}
+                <span>{node.name}</span>
+              </div>
+              {isHovered && (
+                <span className="flex space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="smallIcon"
+                    className="hover:bg-arctic-blue bg-arctic-blue rounded-full"
+                    onClick={() => {
+                      dispatch(
+                        setSelectedTree({
+                          depth: node.depth + 1,
+                          name: "",
+                          parentId: node.id,
+                        })
+                      );
+                      dispatch(setTipe("add"));
+                    }}
+                  >
+                    <Plus color="white" />
+                  </Button>
+                  {isLastChild && (
+                    <Button
+                      variant="ghost"
+                      size="smallIcon"
+                      className="hover:bg-red-600 bg-red-500 rounded-full"
+                      onClick={() => {
+                        deleteNode();
+                      }}
+                    >
+                      <Trash className="w-2 h-2" color="white" />
+                    </Button>
+                  )}
+      
+                  <Button
+                    variant="ghost"
+                    size="smallIcon"
+                    className="hover:bg-arctic-blue bg-arctic-blue rounded-full"
+                    onClick={() => {
+                      dispatch(
+                        setSelectedTree({
+                          depth: node.depth,
+                          name: node.name,
+                          parentId: node.parentId,
+                          id: node.id,
+                        })
+                      );
+                      dispatch(setTipe("edit"));
+                    }}
+                  >
+                    <Edit color="white" />
+                  </Button>
+                </span>
+              )}
+            </div>
+            {isExpanded && node.children && (
+              <div className="ml-6 border-l pl-2">
+                {node.children.map((child) => (
+                  <TreeNode
+                    key={child.name}
+                    node={child}
+                    expandedNodes={expandedNodes}
+                    toggleNode={toggleNode}
+                  />
+                ))}
+              </div>
             )}
-
-            <Button
-              variant="ghost"
-              size="smallIcon"
-              className="hover:bg-arctic-blue bg-arctic-blue rounded-full"
-              onClick={() => {
-                dispatch(
-                  setSelectedTree({
-                    depth: node.depth,
-                    name: node.name,
-                    parentId: node.parentId,
-                    id: node.id,
-                  })
-                );
-                dispatch(setTipe("edit"));
-              }}
-            >
-              <Edit color="white" />
-            </Button>
-          </span>
-        )}
-      </div>
-      {isExpanded && node.children && (
-        <div className="ml-6 border-l pl-2">
-          {node.children.map((child) => (
-            <TreeNode
-              key={child.name}
-              node={child}
-              expandedNodes={expandedNodes}
-              toggleNode={toggleNode}
-            />
-          ))}
-        </div>
-      )}
+          </>
+        )
+      }
     </div>
   );
 };
 
-const TreeView: React.FC = () => {
+const TreeView: React.FC = ({loading}: any) => {
   const selector = useSelector((state: RootState) => state.tree);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const toggleNode = (name: string) => {
@@ -179,15 +192,20 @@ const TreeView: React.FC = () => {
         </button>
       </div>
 
-      {selector.treeData.length &&
-        selector.treeData.map((node) => (
-          <TreeNode
-            key={node.name}
-            node={node}
-            expandedNodes={expandedNodes}
-            toggleNode={toggleNode}
-          />
-        ))}
+      {loading ? (
+        <div>
+          ...Loading
+        </div>
+      ) : selector.treeData.length === 0 ? <div>
+        No menu items found.
+      </div> : selector.treeData.map((node) => (
+        <TreeNode
+          key={node.name}
+          node={node}
+          expandedNodes={expandedNodes}
+          toggleNode={toggleNode}
+        />
+      ))}
     </div>
   );
 };

@@ -5,7 +5,7 @@ export async function PATCH(request: Request) {
     const body = await request.json();
     const { id, ...restBody } = body;
 
-    const response = await fetch(`${process.env.BE_URL}/menu/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/menu/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

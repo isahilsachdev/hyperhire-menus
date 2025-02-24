@@ -30,7 +30,7 @@ export default function RootLayout({
         <Provider store={store}>
           <SidebarProvider>
             <AppSidebar />
-            <main className="p-4 flex-1">
+            <main className="flex-1">
               <BreadcumbComponent />
               {children}
             </main>

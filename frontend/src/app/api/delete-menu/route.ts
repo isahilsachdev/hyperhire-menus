@@ -5,7 +5,7 @@ export async function DELETE(request: Request) {
     const body = await request.json();
     const { id } = body;
     console.log("request :", request);
-    const response = await fetch(`${process.env.BE_URL}/menu/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/menu/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 import { FieldApi, useForm } from "@tanstack/react-form";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { RootState, useAppDispatch } from "../store";
@@ -23,8 +23,9 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 }
 
 const userSchema = z.object({
-  name: z.string().min(3, "name must be at least 3 characters"),
+  name: z.string().min(3, "Name must be at least 3 characters"),
   depth: z.number(),
+  id: z.string(),
   parentData: z
     .object({
       value: z.string(),
@@ -40,6 +41,7 @@ interface DropdownItem {
 
 const FormComponent = () => {
   const selector = useSelector((state: RootState) => state.tree);
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   const flattenTree = (items: IMenu[]): DropdownItem[] => {
@@ -74,6 +76,7 @@ const FormComponent = () => {
         label: "No Parent",
         value: "",
       },
+      id: ''
     });
     dispatch(setTipe("add"));
     dispatch(setSelectedTree(null));
@@ -86,6 +89,7 @@ const FormComponent = () => {
     parentId: string | undefined;
     slug: string;
   }) => {
+    setLoading(true);
     const response = await fetch("/api/add-menu", {
       method: "POST",
       headers: {
@@ -100,6 +104,7 @@ const FormComponent = () => {
     if (!response.ok) {
       throw new Error("Failed to add menu");
     }
+    setLoading(false);
     reset();
   };
 
@@ -109,6 +114,7 @@ const FormComponent = () => {
     parentId: string | undefined;
     slug: string;
   }) => {
+    setLoading(true);
     const response = await fetch("/api/update-menu", {
       method: "PATCH",
       headers: {
@@ -120,6 +126,7 @@ const FormComponent = () => {
     if (!response.ok) {
       throw new Error("Failed to edit menu");
     }
+    setLoading(false);
     reset();
   };
 
@@ -127,6 +134,7 @@ const FormComponent = () => {
     defaultValues: {
       name: selector.selectedTree?.name ?? "",
       depth: selector.selectedTree?.depth ?? 0,
+      id: selector.selectedTree?.id ?? "",
       parentData: dropwDownData.find(
         (item) => item.value === selector.selectedTree?.parentId
       ),
@@ -156,9 +164,6 @@ const FormComponent = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold">
-        {selector.tipe === "add" ? "Add Menu " : "Edit Menu"}
-      </h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -167,13 +172,32 @@ const FormComponent = () => {
         }}
         className="flex flex-col space-y-4"
       >
-        <div className="flex flex-col space-y-2 ">
+        <div className="flex flex-col space-y-2 w-50">
+          <form.Field name="depth">
+            {(field) => (
+              <>
+                <label className='text-[#475467]' htmlFor={field.name}>Depth</label>
+                <input
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#EAECF0] w-[50%]"
+                  name={field.name}
+                  type="number"
+                  disabled
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(Number(e.target.value))}
+                />
+              </>
+            )}
+          </form.Field>
+        </div>
+
+        <div className="flex flex-col space-y-2 w-[50%]">
           <form.Field name="parentData">
             {(field) => (
               <>
-                <label htmlFor={field.name}>ParentData:</label>
+                <label className='text-[#475467]' htmlFor={field.name}>Parent Data</label>
                 <select
-                  className="border border-gray-300 rounded-xl p-2 bg-slate-200"
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB]"
                   value={field.state.value?.value}
                   onChange={(e) => {
                     const selectedItem = dropwDownData.find(
@@ -215,32 +239,14 @@ const FormComponent = () => {
             )}
           </form.Field>
         </div>
-        <div className="flex flex-col space-y-2">
-          <form.Field name="depth">
-            {(field) => (
-              <>
-                <label htmlFor={field.name}>Depth:</label>
-                <input
-                  className="border border-gray-300 rounded-xl p-2 bg-slate-300"
-                  name={field.name}
-                  type="number"
-                  disabled
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                />
-              </>
-            )}
-          </form.Field>
-        </div>
 
         <div className="flex flex-col space-y-2">
           <form.Field name="name">
             {(field) => (
               <>
-                <label htmlFor={field.name}>Name:</label>
+                <label className='text-[#475467]' htmlFor={field.name}>Name</label>
                 <input
-                  className="border border-gray-300 rounded-xl p-2 bg-slate-200"
+                  className="rounded-[16px] py-[14px] px-[16px] h-[52px] bg-[#F9FAFB] w-[50%]"
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
@@ -256,9 +262,10 @@ const FormComponent = () => {
 
         <button
           type="submit"
-          className="w-full bg-arctic-blue p-4 rounded-full text-white"
+          className="bg-arctic-blue px-[32px] py-[14px] rounded-full text-white w-[50%] h-[52px]"
+          disabled={loading}
         >
-          Save
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </div>
